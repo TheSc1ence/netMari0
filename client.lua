@@ -7,6 +7,12 @@ function client_load(ip1, port1)
 	players = 2
 	client_controls()
 	netplay = true
+	if console.visible then
+	pausemenuopen = false
+	console.visible= false
+	love.audio.resume()
+	end
+	gamestate = "onlinemenu"
 
 end
 
@@ -59,6 +65,7 @@ function client_createclient(ip2, port2)
 	umsg.hook( "client_start", client_start)
 	umsg.hook( "client_synctest", client_synctest)
 	umsg.hook( "shootportal", client_shootportal)
+	umsg.hook( "pause", client_pause)
 end
 
 function client_update(dt)
@@ -94,6 +101,17 @@ end
 function client_shootportal(args)
 	args = args:split("~")
 	shootportal(1, tonumber(args[1]), tonumber(args[2]), tonumber(args[3]), tonumber(args[4]))
+end
+
+function client_pause()
+rempausemenuopen = not rempausemenuopen
+	if rempausemenuopen then
+		love.audio.pause()
+		playsound(pausesound)
+	else
+		love.audio.resume()
+	end
+
 end
 
 function client_synctest(input)

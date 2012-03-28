@@ -84,7 +84,7 @@ end
 
 
 music:load{
-	"oscillofun",
+	"overworld",
 	"overworld-fast",
 	"underground",
 	"underground-fast",

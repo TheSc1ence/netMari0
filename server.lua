@@ -7,7 +7,22 @@ function server_load(port1)
 	players = 2
 	server_controls()
 	netplay = true
+	if console.visible then
+	pausemenuopen = false
+	console.visible= false
+	love.audio.resume()
+	end
 	gamestate = "onlinemenu"
+end
+
+function server_pause()
+rempausemenuopen = not rempausemenuopen
+	if rempausemenuopen then
+		love.audio.pause()
+		playsound(pausesound)
+	else
+		love.audio.resume()
+	end
 end
 
 function server_controls()
@@ -55,6 +70,7 @@ function server_createserver(port)
 	umsg.hook( "nickname", server_nicknameget)
 	umsg.hook( "server_synctest", server_synctest)
 	umsg.hook( "shootportal", server_shootportal)
+	umsg.hook( "pause", server_pause)
 end
 
 function server_update(dt)

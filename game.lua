@@ -141,7 +141,7 @@ function game_update(dt)
 	end
 	
 	--pausemenu
-	if pausemenuopen then
+	if pausemenuopen or rempausemenuopen then
 		return
 	end
 	
@@ -474,15 +474,20 @@ function game_update(dt)
 			local i = 1
 			while i <= players and objects["player"][i].dead do
 				i = i + 1
-			end
+			end		
 			local fastestplayer = objects["player"][i]
 			
 			if fastestplayer then
+				if netplay == false then
 				for i = 1, players do
 					if not objects["player"][i].dead and objects["player"][i].x > fastestplayer.x then
 						fastestplayer = objects["player"][i]
 					end
 				end
+				else
+				fastestplayer = objects["player"][mouseowner]
+				end
+				
 				
 				local oldscroll = splitxscroll[split]
 				
@@ -1867,8 +1872,21 @@ function game_draw()
 				love.graphics.setColor(255, 255, 255, 255)
 				properprint("no", (width*8*scale)+28*scale, (112*scale)+4*scale)
 			end
+			
 		end
+	elseif rempausemenuopen then
+	love.graphics.setColor(0, 0, 0, 100)
+	love.graphics.rectangle("fill", 0, 0, width*16*scale, 224*scale)		
+	love.graphics.setColor(0, 0, 0)
+	love.graphics.rectangle("fill", (width*8*scale)-50*scale, (112*scale)-75*scale, 100*scale, 150*scale)
+	love.graphics.setColor(255, 255, 255)
+	drawrectangle(width*8-49, 112-74, 98, 148)
+	love.graphics.setColor(255, 255, 255, 255)
+	properprint("paused", (width*8*scale)-35*scale, (112*scale)-60*scale)
+	properprint("by other", (width*8*scale)-35*scale, (112*scale)-60*scale+(2-1)*25*scale)
+	properprint("player", (width*8*scale)-35*scale, (112*scale)-60*scale+(3-1)*25*scale)
 	end
+	
 end
 
 function updatesplitscreen()
@@ -2598,6 +2616,9 @@ function generatespritebatch()
 end
 
 function game_keypressed(key, unicode)
+	if rempausemenuopen then
+	return
+	end
 	if pausemenuopen and console.visible == false then
 		if menuprompt then
 			if (key == "left" or key == "a") then
@@ -2664,6 +2685,8 @@ function game_keypressed(key, unicode)
 			if pausemenuoptions[pausemenuselected] == "resume" then
 				pausemenuopen = false
 				love.audio.resume()
+				local um = usermessage:new( "pause" )
+				um:send()
 			elseif pausemenuoptions[pausemenuselected] == "suspend" then
 				suspendprompt = true
 				pausemenuselected2 = 1
@@ -2677,6 +2700,8 @@ function game_keypressed(key, unicode)
 		elseif key == "escape" then
 			pausemenuopen = false
 			love.audio.resume()
+			local um = usermessage:new( "pause" )
+			um:send()
 		elseif (key == "right" or key == "d") then
 			if pausemenuoptions[pausemenuselected] == "volume" then
 				if volume < 1 then
@@ -2742,6 +2767,8 @@ function game_keypressed(key, unicode)
 			startlevel(marioworld .. "-" .. mariolevel)
 			return
 		elseif not editormode and not everyonedead then
+			local um = usermessage:new( "pause" )
+			um:send()
 			pausemenuopen = true
 			love.audio.pause()
 			playsound(pausesound)
@@ -2904,7 +2931,7 @@ function shootportal(plnumber, i, sourcex, sourcey, direction)
 end
 
 function game_mousepressed(x, y, button)
-	if pausemenuopen then
+	if pausemenuopen or rempausemenuopen then
 		return
 	end
 	if editormode and editorstate ~= "portalgun" then
@@ -3905,7 +3932,7 @@ function checkkey(s)
 end
 
 function game_joystickpressed( joystick, button )	
-	if pausemenuopen then
+	if pausemenuopen or rempausemenuopen then
 		return
 	end
 	if endpressbutton then

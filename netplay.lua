@@ -13,6 +13,7 @@ ip = "127.0.0.1" -- Server IP here
 max_players = 2 -- Max player count here (max: 4)
 port = 4000 -- Custom port here (default: 4000)
 updatedelay = 0.02 -- Update every X seconds!
+rempausemenuopen = false
 
 
 SERVER = false
