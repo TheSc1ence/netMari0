@@ -965,7 +965,13 @@ function mario:update(dt)
 		end
 		
 		if self.y >= 15 then
-			self:die("pit")
+			--CONSOLE--
+			if not self.invincible then
+				self:die("pit")
+			else
+				self.y = 5
+			end
+			--CONSOLE--
 		elseif flagx and self.x+self.width >= flagx+6/16 and self.y > 2.2 then
 			self:flag()
 		end

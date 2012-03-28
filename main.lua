@@ -39,7 +39,7 @@ function love.load()
 	fsaa = 0
 	fullscreen = false
 	changescale(scale, fullscreen)
-	love.graphics.setCaption( "Mari0" )
+	love.graphics.setCaption( "netMari0.1" )
 	
 	--version check by checking for a const that was added in 0.8.0
 	if love._version_major == nil then error("You have an outdated version of Love! Get 0.8.0 or higher and retry.") end
@@ -140,6 +140,10 @@ function love.load()
 	require "miniblock"
 	require "notgate"
 	require "musicloader"
+	require "netplay"
+	--CONSOLE--
+	require "console"
+	--CONSOLE--
 	
 	http = require("socket.http")
 	http.TIMEOUT = 1
@@ -178,7 +182,7 @@ function love.load()
 	
 	--IMAGES--
 	
-	menuselection = love.graphics.newImage("graphics/" .. graphicspack .. "/menuselect.png")
+	menuselection = love.graphics.newImage("graphics/" .. graphicspack .. "/menuselect_portalgun.png")
 	mappackback = love.graphics.newImage("graphics/" .. graphicspack .. "/mappackback.png")
 	mappacknoicon = love.graphics.newImage("graphics/" .. graphicspack .. "/mappacknoicon.png")
 	mappackoverlay = love.graphics.newImage("graphics/" .. graphicspack .. "/mappackoverlay.png")
@@ -743,10 +747,21 @@ function love.load()
 end
 
 function love.update(dt)
+	--CONSOLE--
+	update_console()
+	--CONSOLE--
 	if music then
 		music:update()
 	end
 	dt = math.min(0.01666667, dt)
+	--CONSOLE--
+	if console.interval then
+		console.interval=console.interval+1
+		if console.interval>600 then
+			console.interval=1
+		end
+	end
+	--CONSOLE--
 	
 	--speed
 	if speed ~= speedtarget then
@@ -785,7 +800,7 @@ function love.update(dt)
 		return
 	end
 	
-	--netplay_update(dt)
+	netplay_update(dt)
 	keyprompt_update()
 	
 	if gamestate == "menu" or gamestate == "mappackmenu" or gamestate == "onlinemenu" or gamestate == "options" then
@@ -817,6 +832,10 @@ function love.draw()
 	end
 	
 	shaders:postdraw()
+	
+	--CONSOLE--
+	draw_console()
+	--CONSOLE--
 	
 	love.graphics.setColor(255, 255,255)
 end
@@ -1211,6 +1230,31 @@ function changescale(s, fullscreen)
 end
 
 function love.keypressed(key, unicode)
+	--CONSOLE--
+	if key=="`" and console.visible == false then
+		pausemenuopen = true
+		console.visible= true
+		love.audio.pause()
+		playsound(pausesound)
+		console.text=""
+		return
+	elseif key == "`" and console.visible then
+		pausemenuopen = false
+		console.visible= false
+		love.audio.resume()
+		return
+	end
+	if console.visible then
+		if key=="backspace" and #console.text>=1 then
+			console.text=console.text:sub(1, #console.text-1)
+		elseif key=="return" then
+			console.cmd()
+		elseif unicode > 31 and unicode < 127 then
+			console.text=console.text..string.char(unicode)
+		end
+		return
+	end
+	--CONSOLE--
 	if keyprompt then
 		keypromptenter("key", key)
 		return
@@ -1526,6 +1570,7 @@ function properprint(s, x, y)
 		end
 	end
 end
+
 
 function loadcustombackground()
 	local i = 1

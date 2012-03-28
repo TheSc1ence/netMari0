@@ -1779,7 +1779,7 @@ function game_draw()
 	end
 	
 	--pause menu
-	if pausemenuopen then
+	if pausemenuopen and console.visible == false then
 		love.graphics.setColor(0, 0, 0, 100)
 		love.graphics.rectangle("fill", 0, 0, width*16*scale, 224*scale)
 		
@@ -2598,7 +2598,7 @@ function generatespritebatch()
 end
 
 function game_keypressed(key, unicode)
-	if pausemenuopen then
+	if pausemenuopen and console.visible == false then
 		if menuprompt then
 			if (key == "left" or key == "a") then
 				pausemenuselected2 = 1
@@ -4085,10 +4085,14 @@ end
 
 function getclosestplayer(x)
 	closestplayer = 1
-	for i = 2, players do
+	if netplay == false then
+		for i = 2, players do
 		if math.abs(objects["player"][closestplayer].x+6/16-x) < math.abs(objects["player"][i].x+6/16-x) then
 			closestplayer = i
 		end
+		end
+	else
+	closestplayer = mouseowner
 	end
 	
 	return closestplayer

@@ -1,12 +1,13 @@
-function client_load()
+function client_load(ip1, port1)
 	CLIENT = true
 	print("===CLIENT===")
-	message( "Attempting Connection to " .. ip .. ":" .. port .. ".." )
-	client_createclient(ip, port)
+	message( "Attempting Connection to " .. ip1 .. ":" .. port1 .. ".." )
+	client_createclient(ip1, port1)
 	updatetimer = 0
 	players = 2
 	client_controls()
 	netplay = true
+
 end
 
 function client_controls()
@@ -21,8 +22,8 @@ function client_controls()
 	controls[i]["down"] = {"s"}
 	controls[i]["run"] = {"lshift"}
 	controls[i]["jump"] = {" "}
-	controls[i]["aimX"] = {} --mouse aiming, so no need
-	controls[i]["aimY"] = {}
+	controls[i]["aimx"] = {} --mouse aiming, so no need
+	controls[i]["aimy"] = {}
 	controls[i]["portal1"] = {}
 	controls[i]["portal2"] = {}
 	controls[i]["reload"] = {"r"}
@@ -35,21 +36,21 @@ function client_controls()
 	controls[i]["down"] = {""}
 	controls[i]["run"] = {""}
 	controls[i]["jump"] = {""}
-	controls[i]["aimX"] = {}
-	controls[i]["aimY"] = {}
+	controls[i]["aimx"] = {}
+	controls[i]["aimy"] = {}
 	controls[i]["portal1"] = {}
 	controls[i]["portal2"] = {}
 	controls[i]["reload"] = {""}
 	controls[i]["use"] = {""}
 end
 
-function client_createclient(ip, port)
+function client_createclient(ip2, port2)
 	pingtime = love.timer.getTime()
 	CLIENT = true
 	MyClient = lube.client("udp")
 	MyClient:setCallback(umsg.recv)
 	MyClient:setHandshake("bj")
-	MyClient:connect(ip, port)
+	MyClient:connect(ip2, port2)
 	MyClient:setPing(true, 5, "PING")
 	
 	--umsg.hook( "string", function)

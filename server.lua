@@ -1,12 +1,13 @@
-function server_load()
+function server_load(port1)
 	SERVER = true
 	message("===SERVER===")
-	server_createserver()
+	server_createserver(port1)
 	message("Server started.")
 	updatetimer = 0
 	players = 2
 	server_controls()
 	netplay = true
+	gamestate = "onlinemenu"
 end
 
 function server_controls()
@@ -21,8 +22,8 @@ function server_controls()
 	controls[i]["down"] = {"s"}
 	controls[i]["run"] = {"lshift"}
 	controls[i]["jump"] = {" "}
-	controls[i]["aimX"] = {} --mouse aiming, so no need
-	controls[i]["aimY"] = {}
+	controls[i]["aimx"] = {} --mouse aiming, so no need
+	controls[i]["aimy"] = {}
 	controls[i]["portal1"] = {}
 	controls[i]["portal2"] = {}
 	controls[i]["reload"] = {"r"}
@@ -35,15 +36,15 @@ function server_controls()
 	controls[i]["down"] = {""}
 	controls[i]["run"] = {""}
 	controls[i]["jump"] = {""}
-	controls[i]["aimX"] = {}
-	controls[i]["aimY"] = {}
+	controls[i]["aimx"] = {}
+	controls[i]["aimy"] = {}
 	controls[i]["portal1"] = {}
 	controls[i]["portal2"] = {}
 	controls[i]["reload"] = {""}
 	controls[i]["use"] = {""}
 end
 
-function server_createserver()
+function server_createserver(port)
 	SERVER = true
 	MyServer = lube.server(port)
 	MyServer:setCallback(umsg.recv,server_connect,server_disconnect)

@@ -1,4 +1,5 @@
 function menu_load()
+	require "netplay"
 	love.audio.stop()
 	editormode = false
 	gamestate = "menu"
@@ -16,7 +17,6 @@ function menu_load()
 	mappackhorscrollsmooth = 0
 	checkpointx = false
 	love.graphics.setBackgroundColor(backgroundcolor[1])
-	
 	controlstable = {"left", "right", "up", "down", "run", "jump", "reload", "use", "aimx", "aimy", "portal1", "portal2"}
 	
 	portalanimation = 1
@@ -282,13 +282,13 @@ function menu_draw()
 		if selection == 0 then
 			love.graphics.draw(menuselection, 73*scale, (137+(selection-1)*16)*scale, 0, scale, scale)
 		elseif selection == 1 then
-			love.graphics.draw(menuselection, 73*scale, (137+(selection-1)*16)*scale, 0, scale, scale)
+			love.graphics.draw(menuselection, 73*scale, (137+(selection-1)*16)*scale, 0, scale, scale,5)
 		elseif selection == 2 then
-			love.graphics.draw(menuselection, 81*scale, (137+(selection-1)*16)*scale, 0, scale, scale)
+			love.graphics.draw(menuselection, 81*scale, (137+(selection-1)*16)*scale, 0, scale, scale,5)
 		elseif selection == 3 then
-			love.graphics.draw(menuselection, 73*scale, (137+(selection-1)*16)*scale, 0, scale, scale)
+			love.graphics.draw(menuselection, 73*scale, (137+(selection-1)*16)*scale, 0, scale, scale,5)
 		elseif selection == 4 then
-			love.graphics.draw(menuselection, 98*scale, (137+(selection-1)*16)*scale, 0, scale, scale)
+			love.graphics.draw(menuselection, 98*scale, (137+(selection-1)*16)*scale, 0, scale, scale,8)
 		end
 		
 		local start = 9
@@ -595,7 +595,7 @@ function menu_draw()
 		if CLIENT == false and SERVER == false then
 			properprint("press c for client", 70*scale, 100*scale)
 			properprint("press s for server", 70*scale, 160*scale)
-			properprint("run away to quit", 78*scale, 170*scale)
+			properprint(ip, 70*scale, 110*scale)
 		elseif CLIENT then
 			properprint("waiting for server..", 62*scale, 100*scale)
 		elseif SERVER then
@@ -1708,9 +1708,9 @@ function menu_keypressed(key, unicode)
 	elseif gamestate == "onlinemenu" then
 		if CLIENT == false and SERVER == false then
 			if key == "c" then
-				client_load()
+				client_load(ip, port)
 			elseif key == "s" then
-				server_load()
+				server_load(port)
 			end
 		elseif SERVER then
 			if (key == "return" or key == "enter" or key == "kpenter" or key == " ") then
