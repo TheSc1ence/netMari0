@@ -2598,8 +2598,7 @@ function mario:startfall()
 end
 
 function mario:die(how)
-	print("Death cause: " .. how)
-	
+	print("Death cause: " .. how)	
 	if how ~= "pit" and how ~= "time" then
 		if self.size > 1 then
 			self:shrink()
